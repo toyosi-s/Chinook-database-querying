@@ -1,0 +1,49 @@
+--*Exploratory analysis*
+
+--Top 10 artists with the highest number of albums
+
+SELECT a.name AS Artistname,
+       COUNT(al.albumid) AS Numberofalbums
+FROM artist a
+LEFT JOIN album al ON a.artistid = al.artistid
+GROUP BY a.name
+ORDER BY Numberofalbums DESC;
+LIMIT 10;
+
+
+--Top played genres in a playlist track
+
+SELECT G.name AS MostPlayedGenre,
+       COUNT(*) AS PlayCount
+FROM playlisttrack PT
+JOIN track T ON PT.trackid = T.trackid
+JOIN genre G ON T.genreid = G.genreid
+GROUP BY G.name
+ORDER BY PlayCount DESC;
+
+
+--Total amount spent on different genres purchased by customer with id 14
+
+SELECT G.name AS GenreName,
+       SUM(il.unitprice) AS TotalAmountSpent
+FROM customer C
+JOIN invoice I ON C.customerid = I.customerid
+JOIN invoiceline il ON I.invoiceid = il.invoiceid
+JOIN track T ON il.trackid = T.trackid
+JOIN genre G ON T.genreid = G.genreid
+WHERE C.customerid = 14
+GROUP BY G.name;
+
+
+--Number of times Rock music was purchased by different customers
+
+SELECT c.customerid,
+       g.name AS genre,
+       COUNT(il.trackid) AS times_purchased
+FROM customer c
+JOIN invoice i ON c.customerid = i.customerid
+JOIN invoiceline il ON i.invoiceid = il.invoiceid
+JOIN track t ON il.trackid = t.trackid
+JOIN genre g ON t.genreid = g.genreid
+WHERE g.name = 'Rock'
+
